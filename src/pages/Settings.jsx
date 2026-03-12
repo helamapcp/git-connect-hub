@@ -1389,6 +1389,22 @@ export default function Settings() {
                         />
                     </DialogContent>
                 </Dialog>
+
+                <AlertDialog open={!!categoryToDelete} onOpenChange={(open) => !open && setCategoryToDelete(null)}>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Remover categoria?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Esta ação removerá a categoria <strong>{categoryToDelete?.name}</strong> da lista local.
+                                Máquinas que ainda usam essa categoria impedem a remoção.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                            <AlertDialogAction onClick={confirmDeleteMachineCategory}>Remover</AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
             </div>
         </div>
     );
