@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { appendSystemLog } from '@/lib/systemLog';
 
 const INVENTORY_STORAGE_KEY = 'frontend-inventory-by-location-v1';
+const INVENTORY_EVENT = 'frontend-inventory-updated';
 
 export const STOCK_LOCATIONS = ['CD', 'PCP', 'PMP', 'FÁBRICA', 'LOGÍSTICA'];
 
@@ -34,13 +35,29 @@ const loadInventory = () => {
   return Array.isArray(parsed) && parsed.length ? parsed : DEFAULT_ITEMS;
 };
 
+const persistInventory = (items) => {
+  if (typeof window === 'undefined') return;
+  window.localStorage.setItem(INVENTORY_STORAGE_KEY, JSON.stringify(items));
+  window.dispatchEvent(new CustomEvent(INVENTORY_EVENT));
+};
+
 export const useInventoryStore = () => {
   const [items, setItems] = useState(() => loadInventory());
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    window.localStorage.setItem(INVENTORY_STORAGE_KEY, JSON.stringify(items));
+    persistInventory(items);
   }, [items]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const refresh = () => setItems(loadInventory());
+    window.addEventListener('storage', refresh);
+    window.addEventListener(INVENTORY_EVENT, refresh);
+    return () => {
+      window.removeEventListener('storage', refresh);
+      window.removeEventListener(INVENTORY_EVENT, refresh);
+    };
+  }, []);
 
   const getItemsByLocation = (location) => items.filter((item) => item.location === location);
 
