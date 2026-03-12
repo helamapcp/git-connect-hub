@@ -237,6 +237,11 @@ export default function PATracking() {
           <p className="text-sm text-muted-foreground">
             Transferência controlada de PA com confirmação manual de quantidade, cálculo automático para FORRO e registro de horário.
           </p>
+          {!canManageLogistics && (
+            <div className="rounded-md border border-border bg-muted px-3 py-2 text-sm text-muted-foreground">
+              Read-only mode for your current role in Logistics.
+            </div>
+          )}
         </div>
 
         <Card>
