@@ -13,6 +13,7 @@ const navItems = [
     { name: 'Dashboard', icon: LayoutDashboard, page: 'Dashboard' },
     { name: 'Produção', icon: Factory, page: 'MachineSelection' },
     { name: 'Ordens', icon: Package, page: 'Orders' },
+    { name: 'PA & Logística', icon: Package, page: 'PATracking' },
     { name: 'Fábrica', icon: Warehouse, page: 'FactoryDashboard' },
     { name: 'Estoque', icon: Boxes, page: 'Estoque' },
     { name: 'Planej. Composto', icon: FlaskConical, page: 'PlanejamentoComposto' },

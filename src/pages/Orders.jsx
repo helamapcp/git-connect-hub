@@ -187,6 +187,21 @@ export default function Orders() {
                     </Button>
                 </div>
 
+                <Card>
+                    <CardContent className="p-4">
+                        <div className="flex flex-wrap items-center gap-2 text-sm">
+                            <span className="font-medium">Fluxo:</span>
+                            <Link to={createPageUrl('Orders')}><Badge variant="secondary">OP</Badge></Link>
+                            <span className="text-muted-foreground">→</span>
+                            <Link to={createPageUrl('MachineSelection')}><Badge variant="secondary">Produção</Badge></Link>
+                            <span className="text-muted-foreground">→</span>
+                            <Link to={createPageUrl('PATracking')}><Badge>PA</Badge></Link>
+                            <span className="text-muted-foreground">→</span>
+                            <Link to={createPageUrl('FactoryDashboard')}><Badge variant="outline">Logística</Badge></Link>
+                        </div>
+                    </CardContent>
+                </Card>
+
                 {/* Filters */}
                 <Card>
                     <CardContent className="p-4">

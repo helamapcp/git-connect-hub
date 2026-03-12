@@ -578,6 +578,21 @@ export default function Production() {
             </header>
 
             <main className="max-w-7xl mx-auto px-4 py-4 space-y-4">
+                <Card>
+                    <CardContent className="p-3">
+                        <div className="flex flex-wrap items-center gap-2 text-sm">
+                            <span className="font-medium">Fluxo:</span>
+                            <Button size="sm" variant="secondary" onClick={() => navigate(createPageUrl('Orders'))}>OP</Button>
+                            <span className="text-muted-foreground">→</span>
+                            <Button size="sm" variant="secondary" onClick={() => navigate(createPageUrl('MachineSelection'))}>Produção</Button>
+                            <span className="text-muted-foreground">→</span>
+                            <Button size="sm" onClick={() => navigate(createPageUrl('PATracking'))}>PA</Button>
+                            <span className="text-muted-foreground">→</span>
+                            <Button size="sm" variant="outline" onClick={() => navigate(createPageUrl('FactoryDashboard'))}>Logística</Button>
+                        </div>
+                    </CardContent>
+                </Card>
+
                 {/* Alertas */}
                 {weightSampleRequired && session && (
                     <Alert className="border-amber-400 bg-amber-50">
