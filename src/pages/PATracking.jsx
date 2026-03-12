@@ -177,6 +177,11 @@ export default function PATracking() {
   };
 
   const markAsDelivered = (id) => {
+    if (!canManageLogistics) {
+      toast.error('Your role has read-only access in Logistics.');
+      return;
+    }
+
     const target = items.find((row) => row.id === id);
     const now = new Date().toISOString();
     setItems((prev) =>
