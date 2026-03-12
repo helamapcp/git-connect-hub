@@ -152,10 +152,22 @@ export default function PATracking() {
     );
 
     setTransferDrafts((prev) => ({ ...prev, [item.id]: '' }));
+    appendSystemLog({
+      action: 'Transferência PA para logística',
+      action_type: 'transfer',
+      location: 'LOGÍSTICA',
+      parameters: {
+        op: item.op_number,
+        product: item.product_name,
+        quantity: qty,
+        m2: transferM2,
+      },
+    });
     toast.success('Transferência confirmada e enviada para logística.');
   };
 
   const markAsDelivered = (id) => {
+    const target = items.find((row) => row.id === id);
     const now = new Date().toISOString();
     setItems((prev) =>
       prev.map((row) =>
@@ -168,6 +180,16 @@ export default function PATracking() {
           : row
       )
     );
+    appendSystemLog({
+      action: 'Entrega de PA confirmada',
+      action_type: 'delivered',
+      location: 'LOGÍSTICA',
+      parameters: {
+        op: target?.op_number,
+        product: target?.product_name,
+        quantity: Number(target?.transfer_qty || 0),
+      },
+    });
     toast.success('PA marcado como entregue.');
   };
 

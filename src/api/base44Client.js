@@ -1,3 +1,5 @@
+import { appendSystemLog } from '@/lib/systemLog';
+
 const mockUser = {
   id: 'local-user-1',
   full_name: 'Frontend Local',
@@ -32,6 +34,17 @@ const sortRows = (rows, orderBy) => {
   });
 };
 
+const logEntityAction = (actionType, entityName, parameters = {}) => {
+  appendSystemLog({
+    action: `${actionType.toUpperCase()} ${entityName}`,
+    action_type: actionType,
+    location: 'SISTEMA',
+    user_id: mockUser.id,
+    user_name: mockUser.full_name,
+    parameters,
+  });
+};
+
 const createEntityAPI = (entityName) => {
   const collection = () => ensureCollection(entityName);
 
@@ -44,9 +57,7 @@ const createEntityAPI = (entityName) => {
       const rows = collection();
       const entries = Object.entries(filters || {});
       if (!entries.length) return [...rows];
-      return rows.filter((row) =>
-        entries.every(([key, value]) => row?.[key] === value)
-      );
+      return rows.filter((row) => entries.every(([key, value]) => row?.[key] === value));
     },
     create: async (payload = {}) => {
       const row = {
@@ -55,6 +66,7 @@ const createEntityAPI = (entityName) => {
         ...payload,
       };
       collection().unshift(row);
+      logEntityAction('create', entityName, { id: row.id, payload: { ...payload } });
       return row;
     },
     update: async (id, payload = {}) => {
@@ -63,15 +75,18 @@ const createEntityAPI = (entityName) => {
       if (idx === -1) {
         const created = { id: id || makeId(), ...payload };
         rows.unshift(created);
+        logEntityAction('create', entityName, { id: created.id, payload: { ...payload }, via: 'update-fallback' });
         return created;
       }
       rows[idx] = { ...rows[idx], ...payload };
+      logEntityAction('update', entityName, { id, payload: { ...payload } });
       return rows[idx];
     },
     delete: async (id) => {
       const rows = collection();
       const idx = rows.findIndex((r) => r.id === id);
       if (idx >= 0) rows.splice(idx, 1);
+      logEntityAction('delete', entityName, { id });
       return { success: true };
     },
     get: async (id) => {
@@ -100,11 +115,27 @@ export const base44 = {
       }
     },
     logout: (redirectUrl) => {
+      appendSystemLog({
+        action: 'Logout',
+        action_type: 'auth',
+        user_id: mockUser.id,
+        user_name: mockUser.full_name,
+        location: 'SISTEMA',
+      });
       if (typeof window !== 'undefined' && redirectUrl) {
         window.location.href = redirectUrl;
       }
     },
-    loginWithProvider: async () => ({ success: true }),
+    loginWithProvider: async () => {
+      appendSystemLog({
+        action: 'Login with provider',
+        action_type: 'auth',
+        user_id: mockUser.id,
+        user_name: mockUser.full_name,
+        location: 'SISTEMA',
+      });
+      return { success: true };
+    },
   },
   entities: entitiesProxy,
 };
