@@ -117,7 +117,7 @@ export default function MachineSelection() {
                                 <div className="text-right mr-4">
                                     <p className="text-sm font-medium text-slate-900">{user.full_name}</p>
                                     <div className="flex items-center justify-end gap-2">
-                                        <Badge className="text-xs bg-emerald-100 text-emerald-700 capitalize">{user.role || 'operador'}</Badge>
+                                        <Badge className="text-xs capitalize" variant="secondary">{getRoleLabel(user.role || ROLE_IDS.MACHINE_OPERATOR)}</Badge>
                                         {user.role === 'operador' && shifts.length > 0 && (
                                             <Badge variant="outline" className="text-xs flex items-center gap-1">
                                                 <Clock className="w-3 h-3" />
