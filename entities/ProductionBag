@@ -1,0 +1,70 @@
+{
+    "name": "ProductionBag",
+    "type": "object",
+    "properties": {
+        "order_id": {
+            "type": "string",
+            "description": "ID da ordem de produ\u00e7\u00e3o"
+        },
+        "product_id": {
+            "type": "string"
+        },
+        "product_name": {
+            "type": "string"
+        },
+        "batch_code": {
+            "type": "string",
+            "description": "C\u00f3digo do lote (ex: MX01-CMP-20260305-001)"
+        },
+        "bag_number": {
+            "type": "number",
+            "description": "N\u00famero sequencial da sacola neste lote"
+        },
+        "weight_kg": {
+            "type": "number",
+            "description": "Peso em kg"
+        },
+        "remaining_kg": {
+            "type": "number",
+            "description": "Peso restante (para consumo parcial)"
+        },
+        "location_code": {
+            "type": "string",
+            "enum": [
+                "PMP",
+                "F\u00c1BRICA",
+                "CONSUMED"
+            ],
+            "default": "PMP",
+            "description": "Localiza\u00e7\u00e3o atual da sacola"
+        },
+        "status": {
+            "type": "string",
+            "enum": [
+                "stored",
+                "transferred",
+                "reserved",
+                "consumed"
+            ],
+            "default": "stored"
+        },
+        "operator_id": {
+            "type": "string"
+        },
+        "operator_name": {
+            "type": "string"
+        },
+        "notes": {
+            "type": "string"
+        },
+        "active": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "required": [
+        "batch_code",
+        "bag_number",
+        "weight_kg"
+    ]
+}

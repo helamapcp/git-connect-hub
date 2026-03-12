@@ -1,0 +1,66 @@
+{
+    "name": "WeightSample",
+    "type": "object",
+    "properties": {
+        "session_id": {
+            "type": "string"
+        },
+        "machine_id": {
+            "type": "string"
+        },
+        "operator_id": {
+            "type": "string"
+        },
+        "operator_name": {
+            "type": "string"
+        },
+        "categoria_processo": {
+            "type": "string",
+            "enum": [
+                "FORRO",
+                "TELHA",
+                "CUMEEIRA",
+                "PORTA",
+                "ACABAMENTO"
+            ]
+        },
+        "intervalo_tipo": {
+            "type": "string",
+            "enum": [
+                "30MIN",
+                "1H"
+            ],
+            "default": "30MIN",
+            "description": "TELHA=30MIN, FORRO=1H"
+        },
+        "timestamp": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "timestamp_referencia": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Arredondado para 30min ou hora cheia"
+        },
+        "peso_medio": {
+            "type": "number",
+            "description": "Peso m\u00e9dio amostrado em KG"
+        },
+        "edited_by": {
+            "type": "string"
+        },
+        "edited_at": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "edit_reason": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "session_id",
+        "machine_id",
+        "peso_medio",
+        "timestamp_referencia"
+    ]
+}

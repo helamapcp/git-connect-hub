@@ -1,0 +1,66 @@
+{
+    "name": "StockMovement",
+    "type": "object",
+    "properties": {
+        "product_id": {
+            "type": "string"
+        },
+        "product_name": {
+            "type": "string"
+        },
+        "batch_code": {
+            "type": "string"
+        },
+        "bag_id": {
+            "type": "string"
+        },
+        "location_code": {
+            "type": "string",
+            "enum": [
+                "CD",
+                "PCP",
+                "PMP",
+                "F\u00c1BRICA"
+            ],
+            "description": "Local do movimento"
+        },
+        "movement_type": {
+            "type": "string",
+            "enum": [
+                "production_output",
+                "transfer_out",
+                "transfer_in",
+                "machine_consumption",
+                "adjustment"
+            ],
+            "description": "Tipo do movimento"
+        },
+        "total_kg": {
+            "type": "number",
+            "description": "Positivo = entrada, negativo = sa\u00edda"
+        },
+        "reference_id": {
+            "type": "string",
+            "description": "ID do documento de refer\u00eancia (transfer\u00eancia, consumo, etc.)"
+        },
+        "operator_id": {
+            "type": "string"
+        },
+        "operator_name": {
+            "type": "string"
+        },
+        "timestamp": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "notes": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "location_code",
+        "movement_type",
+        "total_kg",
+        "timestamp"
+    ]
+}

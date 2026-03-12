@@ -1,0 +1,63 @@
+{
+    "name": "TransferenciaPCP",
+    "type": "object",
+    "description": "Transfer\u00eancia de MP do PCP para a PMP baseada em formula\u00e7\u00e3o",
+    "properties": {
+        "numero": {
+            "type": "string",
+            "description": "Ex: TPCP-00001"
+        },
+        "formulacao_id": {
+            "type": "string"
+        },
+        "formulacao_nome": {
+            "type": "string"
+        },
+        "misturador": {
+            "type": "string",
+            "description": "Identifica\u00e7\u00e3o do misturador (ex: MIS-01)"
+        },
+        "num_bateladas": {
+            "type": "number",
+            "default": 1
+        },
+        "status": {
+            "type": "string",
+            "enum": [
+                "rascunho",
+                "confirmada",
+                "cancelada"
+            ],
+            "default": "rascunho"
+        },
+        "itens": {
+            "type": "string",
+            "description": "JSON array: [{material_id, material_nome, material_tipo, qtd_necessaria_kg, saldo_pmp_kg, sacos_novos, kg_saco, qtd_transferida_kg, sobra_pmp_kg}]"
+        },
+        "total_transferido_kg": {
+            "type": "number",
+            "default": 0
+        },
+        "observacoes": {
+            "type": "string"
+        },
+        "operator_id": {
+            "type": "string"
+        },
+        "operator_name": {
+            "type": "string"
+        },
+        "data_transferencia": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "active": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "required": [
+        "formulacao_id",
+        "num_bateladas"
+    ]
+}

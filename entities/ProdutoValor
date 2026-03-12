@@ -1,0 +1,27 @@
+{
+    "name": "ProdutoValor",
+    "type": "object",
+    "properties": {
+        "produto_id": {
+            "type": "string",
+            "description": "ID do produto"
+        },
+        "campo_id": {
+            "type": "string",
+            "description": "ID do campo (ProdutoCampo)"
+        },
+        "nome_campo": {
+            "type": "string",
+            "description": "Nome do campo (para retrocompatibilidade)"
+        },
+        "valor": {
+            "type": "string",
+            "description": "Valor armazenado como string"
+        }
+    },
+    "required": [
+        "produto_id",
+        "campo_id",
+        "nome_campo"
+    ]
+}

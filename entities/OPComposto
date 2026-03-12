@@ -1,0 +1,83 @@
+{
+    "name": "OPComposto",
+    "type": "object",
+    "description": "Ordem de Produ\u00e7\u00e3o de composto na PMP",
+    "properties": {
+        "numero": {
+            "type": "string",
+            "description": "Ex: OPC-00001"
+        },
+        "formulacao_id": {
+            "type": "string"
+        },
+        "formulacao_nome": {
+            "type": "string"
+        },
+        "transferencia_id": {
+            "type": "string",
+            "description": "Refer\u00eancia \u00e0 transfer\u00eancia PCP que gerou esta OP"
+        },
+        "misturador": {
+            "type": "string"
+        },
+        "num_bateladas_planejadas": {
+            "type": "number"
+        },
+        "num_bateladas_realizadas": {
+            "type": "number",
+            "default": 0
+        },
+        "status": {
+            "type": "string",
+            "enum": [
+                "aberta",
+                "em_producao",
+                "finalizada",
+                "cancelada"
+            ],
+            "default": "aberta"
+        },
+        "total_composto_kg": {
+            "type": "number",
+            "default": 0,
+            "description": "Total de composto produzido"
+        },
+        "num_bags": {
+            "type": "number",
+            "default": 0,
+            "description": "Total de bags produzidas"
+        },
+        "peso_medio_bag_kg": {
+            "type": "number",
+            "description": "Peso m\u00e9dio por bag"
+        },
+        "batch_code": {
+            "type": "string"
+        },
+        "observacoes": {
+            "type": "string"
+        },
+        "data_abertura": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "data_finalizacao": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "operator_id": {
+            "type": "string"
+        },
+        "operator_name": {
+            "type": "string"
+        },
+        "active": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "required": [
+        "formulacao_id",
+        "num_bateladas_planejadas"
+    ]
+}

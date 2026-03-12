@@ -1,0 +1,148 @@
+{
+    "name": "ProductionOrder",
+    "type": "object",
+    "properties": {
+        "order_number": {
+            "type": "string"
+        },
+        "order_type": {
+            "type": "string",
+            "enum": [
+                "PADRAO",
+                "PEDIDO"
+            ],
+            "default": "PADRAO",
+            "description": "Tipo da OP"
+        },
+        "product_code": {
+            "type": "string"
+        },
+        "product_name": {
+            "type": "string"
+        },
+        "categoria_processo": {
+            "type": "string",
+            "enum": [
+                "FORRO",
+                "TELHA",
+                "CUMEEIRA",
+                "PORTA",
+                "ACABAMENTO"
+            ],
+            "description": "Categoria do processo produtivo"
+        },
+        "unidade_producao": {
+            "type": "string",
+            "enum": [
+                "CAIXA",
+                "UNIDADE",
+                "metros",
+                "kg"
+            ],
+            "default": "metros"
+        },
+        "unidade_refugo": {
+            "type": "string",
+            "enum": [
+                "KG",
+                "UNIDADE"
+            ],
+            "default": "KG"
+        },
+        "quantity_planned": {
+            "type": "number"
+        },
+        "quantity_produced": {
+            "type": "number",
+            "default": 0
+        },
+        "quantity_loss": {
+            "type": "number",
+            "default": 0
+        },
+        "refugo_telha_kg_total": {
+            "type": "number",
+            "default": 0
+        },
+        "tipo_b_total": {
+            "type": "number",
+            "default": 0
+        },
+        "unit": {
+            "type": "string",
+            "enum": [
+                "metros",
+                "kg",
+                "unidades",
+                "caixas"
+            ],
+            "default": "metros"
+        },
+        "machine_id": {
+            "type": "string"
+        },
+        "machine_code": {
+            "type": "string"
+        },
+        "status": {
+            "type": "string",
+            "enum": [
+                "PLANEJADA",
+                "LIBERADA",
+                "EM_PRODUCAO",
+                "PAUSADA",
+                "FINALIZADA",
+                "CANCELADA",
+                "pending",
+                "in_progress",
+                "paused",
+                "completed",
+                "cancelled"
+            ],
+            "default": "LIBERADA"
+        },
+        "priority": {
+            "type": "string",
+            "enum": [
+                "low",
+                "normal",
+                "high",
+                "urgent"
+            ],
+            "default": "normal"
+        },
+        "prioridade_numerica": {
+            "type": "number",
+            "default": 0
+        },
+        "start_date": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "end_date": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "scheduled_date": {
+            "type": "string",
+            "format": "date"
+        },
+        "paused_at": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "notes": {
+            "type": "string"
+        },
+        "active": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "required": [
+        "order_number",
+        "product_code",
+        "product_name",
+        "quantity_planned"
+    ]
+}

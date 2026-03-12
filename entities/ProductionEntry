@@ -1,0 +1,100 @@
+{
+    "name": "ProductionEntry",
+    "type": "object",
+    "properties": {
+        "session_id": {
+            "type": "string"
+        },
+        "order_id": {
+            "type": "string"
+        },
+        "machine_id": {
+            "type": "string"
+        },
+        "operator_id": {
+            "type": "string"
+        },
+        "categoria_processo": {
+            "type": "string",
+            "enum": [
+                "FORRO",
+                "TELHA",
+                "CUMEEIRA",
+                "PORTA",
+                "ACABAMENTO"
+            ]
+        },
+        "quantity": {
+            "type": "number",
+            "description": "Quantidade produzida (CAIXAS ou UNIDADES)"
+        },
+        "unit": {
+            "type": "string",
+            "enum": [
+                "metros",
+                "kg",
+                "unidades",
+                "CAIXA",
+                "UNIDADE"
+            ]
+        },
+        "refugo_processo_kg": {
+            "type": "number",
+            "default": 0,
+            "description": "Refugo processo em KG"
+        },
+        "refugo_telha_un": {
+            "type": "number",
+            "default": 0,
+            "description": "Refugo telha em unidades"
+        },
+        "refugo_telha_kg_calculado": {
+            "type": "number",
+            "default": 0,
+            "description": "Refugo telha convertido para KG"
+        },
+        "tipo_b_un": {
+            "type": "number",
+            "default": 0,
+            "description": "Tipo B em unidades"
+        },
+        "capstock_consumo_kg": {
+            "type": "number",
+            "default": 0,
+            "description": "Capstock consumido em KG"
+        },
+        "peso_medio_amostrado": {
+            "type": "number",
+            "description": "Peso m\u00e9dio da amostra"
+        },
+        "lote_composto_id": {
+            "type": "string",
+            "description": "ID do lote de composto"
+        },
+        "lote_composto_codigo": {
+            "type": "string"
+        },
+        "consumo_composto_kg": {
+            "type": "number",
+            "default": 0
+        },
+        "timestamp": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "notes": {
+            "type": "string"
+        },
+        "active": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "required": [
+        "session_id",
+        "order_id",
+        "machine_id",
+        "quantity",
+        "timestamp"
+    ]
+}

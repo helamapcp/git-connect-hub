@@ -1,0 +1,61 @@
+{
+    "name": "LossEvent",
+    "type": "object",
+    "properties": {
+        "session_id": {
+            "type": "string",
+            "description": "ID da sess\u00e3o"
+        },
+        "order_id": {
+            "type": "string",
+            "description": "ID da ordem"
+        },
+        "machine_id": {
+            "type": "string",
+            "description": "ID da m\u00e1quina"
+        },
+        "reason_id": {
+            "type": "string",
+            "description": "ID do motivo de perda"
+        },
+        "reason_name": {
+            "type": "string",
+            "description": "Nome do motivo"
+        },
+        "quantity": {
+            "type": "number",
+            "description": "Quantidade perdida"
+        },
+        "unit": {
+            "type": "string",
+            "enum": [
+                "metros",
+                "kg",
+                "unidades"
+            ],
+            "default": "metros"
+        },
+        "timestamp": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "notes": {
+            "type": "string"
+        },
+        "operator_id": {
+            "type": "string"
+        },
+        "active": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "required": [
+        "session_id",
+        "order_id",
+        "machine_id",
+        "reason_id",
+        "quantity",
+        "timestamp"
+    ]
+}

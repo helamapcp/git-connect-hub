@@ -1,0 +1,59 @@
+{
+    "name": "MachineConsumption",
+    "type": "object",
+    "properties": {
+        "machine_id": {
+            "type": "string"
+        },
+        "machine_code": {
+            "type": "string"
+        },
+        "bag_id": {
+            "type": "string",
+            "description": "ID da sacola consumida"
+        },
+        "bag_number": {
+            "type": "number"
+        },
+        "product_id": {
+            "type": "string"
+        },
+        "product_name": {
+            "type": "string"
+        },
+        "batch_code": {
+            "type": "string"
+        },
+        "consumed_kg": {
+            "type": "number"
+        },
+        "full_consumption": {
+            "type": "boolean",
+            "default": true,
+            "description": "Consumo total ou parcial"
+        },
+        "operator_id": {
+            "type": "string"
+        },
+        "operator_name": {
+            "type": "string"
+        },
+        "timestamp": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "notes": {
+            "type": "string"
+        },
+        "active": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "required": [
+        "machine_id",
+        "bag_id",
+        "consumed_kg",
+        "timestamp"
+    ]
+}

@@ -1,0 +1,39 @@
+{
+    "name": "StockBalance",
+    "type": "object",
+    "description": "Saldo atual por material e local",
+    "properties": {
+        "local": {
+            "type": "string",
+            "enum": [
+                "CD",
+                "PCP",
+                "PMP",
+                "F\u00c1BRICA"
+            ]
+        },
+        "material_id": {
+            "type": "string"
+        },
+        "material_nome": {
+            "type": "string"
+        },
+        "material_tipo": {
+            "type": "string"
+        },
+        "quantidade_kg": {
+            "type": "number",
+            "default": 0
+        },
+        "ultima_atualizacao": {
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "local",
+        "material_id",
+        "material_nome",
+        "quantidade_kg"
+    ]
+}

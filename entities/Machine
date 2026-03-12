@@ -1,0 +1,57 @@
+{
+    "name": "Machine",
+    "type": "object",
+    "properties": {
+        "code": {
+            "type": "string",
+            "description": "C\u00f3digo \u00fanico da m\u00e1quina (ex: EXT-001)"
+        },
+        "name": {
+            "type": "string",
+            "description": "Nome da m\u00e1quina"
+        },
+        "type": {
+            "type": "string",
+            "enum": [
+                "extrusora",
+                "injetora",
+                "cortadeira",
+                "embaladora"
+            ],
+            "description": "Tipo de m\u00e1quina"
+        },
+        "sector": {
+            "type": "string",
+            "description": "Setor da f\u00e1brica"
+        },
+        "status": {
+            "type": "string",
+            "enum": [
+                "available",
+                "in_production",
+                "maintenance",
+                "inactive"
+            ],
+            "default": "available",
+            "description": "Status atual da m\u00e1quina"
+        },
+        "current_session_id": {
+            "type": "string",
+            "description": "ID da sess\u00e3o ativa"
+        },
+        "current_order_id": {
+            "type": "string",
+            "description": "ID da ordem ativa"
+        },
+        "active": {
+            "type": "boolean",
+            "default": true,
+            "description": "Soft delete flag"
+        }
+    },
+    "required": [
+        "code",
+        "name",
+        "type"
+    ]
+}

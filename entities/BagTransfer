@@ -1,0 +1,64 @@
+{
+    "name": "BagTransfer",
+    "type": "object",
+    "properties": {
+        "transfer_number": {
+            "type": "string",
+            "description": "N\u00famero da transfer\u00eancia (ex: T-00041)"
+        },
+        "origin_location": {
+            "type": "string",
+            "enum": [
+                "PMP",
+                "F\u00c1BRICA"
+            ],
+            "default": "PMP"
+        },
+        "destination_location": {
+            "type": "string",
+            "enum": [
+                "PMP",
+                "F\u00c1BRICA"
+            ],
+            "default": "F\u00c1BRICA"
+        },
+        "batch_code": {
+            "type": "string"
+        },
+        "bag_ids": {
+            "type": "string",
+            "description": "JSON array de IDs das sacolas"
+        },
+        "total_bags": {
+            "type": "number",
+            "default": 0
+        },
+        "total_kg": {
+            "type": "number",
+            "default": 0
+        },
+        "operator_id": {
+            "type": "string"
+        },
+        "operator_name": {
+            "type": "string"
+        },
+        "transfer_date": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "notes": {
+            "type": "string"
+        },
+        "active": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "required": [
+        "origin_location",
+        "destination_location",
+        "total_bags",
+        "total_kg"
+    ]
+}

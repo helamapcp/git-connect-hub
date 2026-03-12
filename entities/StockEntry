@@ -1,0 +1,88 @@
+{
+    "name": "StockEntry",
+    "type": "object",
+    "properties": {
+        "tipo_movimento": {
+            "type": "string",
+            "enum": [
+                "entrada",
+                "saida",
+                "transferencia_entrada",
+                "transferencia_saida",
+                "producao_composto"
+            ],
+            "description": "Tipo do lan\u00e7amento"
+        },
+        "local_origem": {
+            "type": "string",
+            "enum": [
+                "CD",
+                "PCP",
+                "PMP",
+                "F\u00c1BRICA",
+                "externo"
+            ],
+            "description": "Local de origem"
+        },
+        "local_destino": {
+            "type": "string",
+            "enum": [
+                "CD",
+                "PCP",
+                "PMP",
+                "F\u00c1BRICA",
+                "externo"
+            ],
+            "description": "Local de destino"
+        },
+        "material_id": {
+            "type": "string"
+        },
+        "material_nome": {
+            "type": "string"
+        },
+        "material_tipo": {
+            "type": "string"
+        },
+        "lote_codigo": {
+            "type": "string",
+            "description": "C\u00f3digo do lote/nota fiscal"
+        },
+        "quantidade_kg": {
+            "type": "number"
+        },
+        "fornecedor": {
+            "type": "string"
+        },
+        "nota_fiscal": {
+            "type": "string"
+        },
+        "referencia_id": {
+            "type": "string",
+            "description": "ID do documento relacionado (ex: producao composto)"
+        },
+        "observacoes": {
+            "type": "string"
+        },
+        "operator_id": {
+            "type": "string"
+        },
+        "operator_name": {
+            "type": "string"
+        },
+        "data_lancamento": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "active": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "required": [
+        "tipo_movimento",
+        "local_origem",
+        "quantidade_kg",
+        "data_lancamento"
+    ]
+}

@@ -1,0 +1,37 @@
+{
+    "name": "DowntimeReason",
+    "type": "object",
+    "properties": {
+        "code": {
+            "type": "string",
+            "description": "C\u00f3digo do motivo"
+        },
+        "name": {
+            "type": "string",
+            "description": "Nome do motivo"
+        },
+        "category": {
+            "type": "string",
+            "enum": [
+                "planned",
+                "unplanned",
+                "maintenance",
+                "setup",
+                "quality"
+            ],
+            "description": "Categoria"
+        },
+        "description": {
+            "type": "string"
+        },
+        "active": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "required": [
+        "code",
+        "name",
+        "category"
+    ]
+}

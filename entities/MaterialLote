@@ -1,0 +1,53 @@
+{
+    "name": "MaterialLote",
+    "type": "object",
+    "properties": {
+        "material_id": {
+            "type": "string"
+        },
+        "codigo_lote": {
+            "type": "string",
+            "description": "C\u00f3digo do lote"
+        },
+        "descricao": {
+            "type": "string"
+        },
+        "peso_inicial": {
+            "type": "number",
+            "description": "Peso inicial em KG"
+        },
+        "peso_disponivel": {
+            "type": "number",
+            "description": "Peso dispon\u00edvel em KG"
+        },
+        "peso_consumido": {
+            "type": "number",
+            "default": 0
+        },
+        "data_entrada": {
+            "type": "string",
+            "format": "date"
+        },
+        "status": {
+            "type": "string",
+            "enum": [
+                "disponivel",
+                "em_uso",
+                "esgotado"
+            ],
+            "default": "disponivel"
+        },
+        "fornecedor": {
+            "type": "string"
+        },
+        "active": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "required": [
+        "codigo_lote",
+        "peso_inicial",
+        "peso_disponivel"
+    ]
+}

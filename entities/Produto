@@ -1,0 +1,47 @@
+{
+    "name": "Produto",
+    "type": "object",
+    "properties": {
+        "codigo": {
+            "type": "string",
+            "description": "C\u00f3digo \u00fanico do produto"
+        },
+        "nome": {
+            "type": "string",
+            "description": "Nome do produto"
+        },
+        "categoria": {
+            "type": "string",
+            "enum": [
+                "TELHA",
+                "FORRO",
+                "CUMEEIRA",
+                "PORTA",
+                "ACABAMENTO"
+            ],
+            "description": "Categoria do processo produtivo"
+        },
+        "unidade_producao": {
+            "type": "string",
+            "enum": [
+                "UNIDADE",
+                "CAIXA",
+                "metros",
+                "kg"
+            ],
+            "default": "UNIDADE"
+        },
+        "ativo": {
+            "type": "boolean",
+            "default": true
+        },
+        "notas": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "codigo",
+        "nome",
+        "categoria"
+    ]
+}

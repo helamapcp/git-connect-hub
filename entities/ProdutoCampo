@@ -1,0 +1,58 @@
+{
+    "name": "ProdutoCampo",
+    "type": "object",
+    "properties": {
+        "nome_campo": {
+            "type": "string",
+            "description": "Nome do campo (ex: peso_unitario)"
+        },
+        "label": {
+            "type": "string",
+            "description": "R\u00f3tulo exibido ao usu\u00e1rio"
+        },
+        "tipo_dado": {
+            "type": "string",
+            "enum": [
+                "string",
+                "number",
+                "select",
+                "boolean"
+            ],
+            "default": "string",
+            "description": "Tipo do dado"
+        },
+        "obrigatorio": {
+            "type": "boolean",
+            "default": false
+        },
+        "opcoes_select": {
+            "type": "string",
+            "description": "Op\u00e7\u00f5es para tipo select (JSON array como string)"
+        },
+        "categoria_aplicavel": {
+            "type": "string",
+            "enum": [
+                "TELHA",
+                "FORRO",
+                "CUMEEIRA",
+                "PORTA",
+                "ACABAMENTO"
+            ],
+            "description": "Se preenchido, campo aparece apenas para esta categoria"
+        },
+        "ordem": {
+            "type": "number",
+            "default": 0,
+            "description": "Ordem de exibi\u00e7\u00e3o"
+        },
+        "ativo": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "required": [
+        "nome_campo",
+        "label",
+        "tipo_dado"
+    ]
+}

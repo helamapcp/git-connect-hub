@@ -1,0 +1,27 @@
+{
+    "name": "Shift",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "Nome do turno"
+        },
+        "start_time": {
+            "type": "string",
+            "description": "Hora de in\u00edcio (HH:MM)"
+        },
+        "end_time": {
+            "type": "string",
+            "description": "Hora de fim (HH:MM)"
+        },
+        "active": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "required": [
+        "name",
+        "start_time",
+        "end_time"
+    ]
+}

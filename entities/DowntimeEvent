@@ -1,0 +1,71 @@
+{
+    "name": "DowntimeEvent",
+    "type": "object",
+    "properties": {
+        "session_id": {
+            "type": "string",
+            "description": "ID da sess\u00e3o"
+        },
+        "machine_id": {
+            "type": "string",
+            "description": "ID da m\u00e1quina"
+        },
+        "reason_id": {
+            "type": "string",
+            "description": "ID do motivo de parada"
+        },
+        "reason_name": {
+            "type": "string",
+            "description": "Nome do motivo"
+        },
+        "reason_category": {
+            "type": "string",
+            "enum": [
+                "planned",
+                "unplanned",
+                "maintenance",
+                "setup",
+                "quality"
+            ],
+            "description": "Categoria da parada"
+        },
+        "start_time": {
+            "type": "string",
+            "format": "date-time",
+            "description": "In\u00edcio da parada"
+        },
+        "end_time": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Fim da parada"
+        },
+        "duration_minutes": {
+            "type": "number",
+            "description": "Dura\u00e7\u00e3o em minutos"
+        },
+        "status": {
+            "type": "string",
+            "enum": [
+                "open",
+                "closed"
+            ],
+            "default": "open"
+        },
+        "notes": {
+            "type": "string"
+        },
+        "operator_id": {
+            "type": "string"
+        },
+        "active": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "required": [
+        "session_id",
+        "machine_id",
+        "reason_id",
+        "start_time"
+    ]
+}

@@ -1,0 +1,20 @@
+{
+    "name": "OpSequence",
+    "type": "object",
+    "properties": {
+        "prefixo": {
+            "type": "string",
+            "default": "OP",
+            "description": "Prefixo do n\u00famero da OP"
+        },
+        "ultimo_numero": {
+            "type": "number",
+            "default": 0,
+            "description": "\u00daltimo n\u00famero gerado"
+        }
+    },
+    "required": [
+        "prefixo",
+        "ultimo_numero"
+    ]
+}

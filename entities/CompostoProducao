@@ -1,0 +1,70 @@
+{
+    "name": "CompostoProducao",
+    "type": "object",
+    "description": "Produ\u00e7\u00e3o de composto na PMP: entrada de MP e sa\u00edda de composto",
+    "properties": {
+        "numero": {
+            "type": "string",
+            "description": "N\u00famero sequencial ex: COMP-00001"
+        },
+        "batch_code": {
+            "type": "string",
+            "description": "C\u00f3digo do lote gerado ex: MX01-CMP-20260305-001"
+        },
+        "status": {
+            "type": "string",
+            "enum": [
+                "rascunho",
+                "finalizado"
+            ],
+            "default": "rascunho"
+        },
+        "data_producao": {
+            "type": "string",
+            "format": "date"
+        },
+        "materias_primas": {
+            "type": "string",
+            "description": "JSON array: [{material_id, material_nome, quantidade_kg}]"
+        },
+        "total_mp_kg": {
+            "type": "number",
+            "default": 0,
+            "description": "Total de MP consumida em kg"
+        },
+        "total_composto_kg": {
+            "type": "number",
+            "default": 0,
+            "description": "Total de composto produzido em kg"
+        },
+        "rendimento_pct": {
+            "type": "number",
+            "description": "Rendimento % (composto/mp)"
+        },
+        "num_sacolas": {
+            "type": "number",
+            "default": 0
+        },
+        "peso_medio_sacola_kg": {
+            "type": "number"
+        },
+        "observacoes": {
+            "type": "string"
+        },
+        "operator_id": {
+            "type": "string"
+        },
+        "operator_name": {
+            "type": "string"
+        },
+        "active": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "required": [
+        "data_producao",
+        "total_mp_kg",
+        "total_composto_kg"
+    ]
+}

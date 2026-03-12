@@ -1,0 +1,96 @@
+{
+    "name": "Session",
+    "type": "object",
+    "properties": {
+        "machine_id": {
+            "type": "string"
+        },
+        "machine_code": {
+            "type": "string"
+        },
+        "order_id": {
+            "type": "string"
+        },
+        "order_number": {
+            "type": "string"
+        },
+        "order_type": {
+            "type": "string",
+            "enum": [
+                "PADRAO",
+                "PEDIDO"
+            ],
+            "default": "PADRAO"
+        },
+        "operator_id": {
+            "type": "string"
+        },
+        "operator_name": {
+            "type": "string"
+        },
+        "shift_id": {
+            "type": "string"
+        },
+        "shift_name": {
+            "type": "string"
+        },
+        "start_time": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "end_time": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "status": {
+            "type": "string",
+            "enum": [
+                "active",
+                "paused",
+                "completed"
+            ],
+            "default": "active"
+        },
+        "total_produced": {
+            "type": "number",
+            "default": 0
+        },
+        "total_loss": {
+            "type": "number",
+            "default": 0
+        },
+        "total_refugo_processo_kg": {
+            "type": "number",
+            "default": 0
+        },
+        "total_refugo_telha_kg": {
+            "type": "number",
+            "default": 0
+        },
+        "total_tipo_b_un": {
+            "type": "number",
+            "default": 0
+        },
+        "total_downtime_minutes": {
+            "type": "number",
+            "default": 0
+        },
+        "has_open_downtime": {
+            "type": "boolean",
+            "default": false
+        },
+        "paused_by_order_id": {
+            "type": "string",
+            "description": "ID da OP_PEDIDO que pausou esta sess\u00e3o"
+        },
+        "active": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "required": [
+        "machine_id",
+        "operator_id",
+        "start_time"
+    ]
+}
