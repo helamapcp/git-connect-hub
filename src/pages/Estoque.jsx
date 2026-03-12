@@ -9,9 +9,11 @@ import EstoquePMP from '@/components/estoque/EstoquePMP.jsx';
 import EstoqueFabrica from '@/components/estoque/EstoqueFabrica.jsx';
 import EstoqueLogistica from '@/components/estoque/EstoqueLogistica.jsx';
 import EstoqueResumo from '@/components/estoque/EstoqueResumo.jsx';
+import StockOperatorFlowPanel from '@/components/estoque/StockOperatorFlowPanel.jsx';
 
 const TABS = [
   { value: 'resumo', label: 'Resumo Geral' },
+  { value: 'operacoes', label: 'Operações' },
   { value: 'cd', label: 'CD' },
   { value: 'pcp', label: 'PCP' },
   { value: 'pmp', label: 'PMP' },
@@ -47,13 +49,14 @@ export default function Estoque() {
       </Card>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid grid-cols-3 md:grid-cols-6 w-full h-auto">
+        <TabsList className="grid grid-cols-3 md:grid-cols-7 w-full h-auto">
           {TABS.map((tab) => (
             <TabsTrigger key={tab.value} value={tab.value}>{tab.label}</TabsTrigger>
           ))}
         </TabsList>
 
         <TabsContent value="resumo"><EstoqueResumo onNavigate={setActiveTab} /></TabsContent>
+        <TabsContent value="operacoes"><StockOperatorFlowPanel /></TabsContent>
         <TabsContent value="cd"><EstoqueCD /></TabsContent>
         <TabsContent value="pcp"><EstoquePCP /></TabsContent>
         <TabsContent value="pmp"><EstoquePMP /></TabsContent>
