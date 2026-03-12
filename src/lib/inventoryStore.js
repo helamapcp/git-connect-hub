@@ -76,6 +76,163 @@ export const useInventoryStore = () => {
     return grouped;
   }, [items]);
 
+  const receiveMaterial = ({
+    location = 'CD',
+    itemName,
+    itemType = 'Matéria-prima',
+    quantityKg,
+    unit = 'kg',
+    comment,
+    userName = 'Frontend Local',
+  }) => {
+    const normalizedName = String(itemName || '').trim();
+    const qty = Number(quantityKg || 0);
+
+    if (!normalizedName) throw new Error('Nome do material é obrigatório.');
+    if (!Number.isFinite(qty) || qty <= 0) throw new Error('Quantidade de recebimento inválida.');
+
+    setItems((prev) => {
+      const now = new Date().toISOString();
+      const existing = prev.find(
+        (item) => item.location === location && String(item.item_name || '').toLowerCase() === normalizedName.toLowerCase()
+      );
+
+      if (existing) {
+        return prev.map((item) =>
+          item.id === existing.id
+            ? {
+                ...item,
+                quantity: Number((Number(item.quantity || 0) + qty).toFixed(2)),
+                updated_at: now,
+              }
+            : item
+        );
+      }
+
+      const id = typeof crypto !== 'undefined' && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `stock-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+
+      return [
+        {
+          id,
+          location,
+          item_name: normalizedName,
+          item_type: itemType,
+          quantity: Number(qty.toFixed(2)),
+          unit,
+          updated_at: now,
+        },
+        ...prev,
+      ];
+    });
+
+    appendSystemLog({
+      action: 'Recebimento de material',
+      action_type: 'create',
+      location,
+      user_name: userName,
+      parameters: {
+        item: normalizedName,
+        quantity_kg: Number(qty.toFixed(2)),
+        comment: String(comment || '').trim(),
+      },
+    });
+  };
+
+  const transferMaterial = ({
+    fromLocation,
+    toLocation,
+    itemName,
+    quantityKg,
+    itemType = 'Matéria-prima',
+    userName = 'Frontend Local',
+    reference,
+    comment,
+  }) => {
+    const normalizedName = String(itemName || '').trim();
+    const qty = Number(quantityKg || 0);
+
+    if (!fromLocation || !toLocation) throw new Error('Origem e destino são obrigatórios.');
+    if (!normalizedName) throw new Error('Material é obrigatório para transferência.');
+    if (!Number.isFinite(qty) || qty <= 0) throw new Error('Quantidade de transferência inválida.');
+
+    const available = items
+      .filter((item) => item.location === fromLocation && String(item.item_name || '').toLowerCase() === normalizedName.toLowerCase())
+      .reduce((sum, item) => sum + Number(item.quantity || 0), 0);
+
+    if (available < qty) {
+      throw new Error(`Saldo insuficiente em ${fromLocation} para ${normalizedName}. Disponível: ${available.toFixed(2)} kg.`);
+    }
+
+    setItems((prev) => {
+      const now = new Date().toISOString();
+      let deducted = false;
+
+      const afterSource = prev.map((item) => {
+        if (
+          !deducted &&
+          item.location === fromLocation &&
+          String(item.item_name || '').toLowerCase() === normalizedName.toLowerCase()
+        ) {
+          deducted = true;
+          return {
+            ...item,
+            quantity: Number((Number(item.quantity || 0) - qty).toFixed(2)),
+            updated_at: now,
+          };
+        }
+        return item;
+      });
+
+      const destination = afterSource.find(
+        (item) => item.location === toLocation && String(item.item_name || '').toLowerCase() === normalizedName.toLowerCase()
+      );
+
+      if (destination) {
+        return afterSource.map((item) =>
+          item.id === destination.id
+            ? {
+                ...item,
+                quantity: Number((Number(item.quantity || 0) + qty).toFixed(2)),
+                updated_at: now,
+              }
+            : item
+        );
+      }
+
+      const id = typeof crypto !== 'undefined' && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `stock-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+
+      return [
+        {
+          id,
+          location: toLocation,
+          item_name: normalizedName,
+          item_type: itemType,
+          quantity: Number(qty.toFixed(2)),
+          unit: 'kg',
+          updated_at: now,
+        },
+        ...afterSource,
+      ];
+    });
+
+    appendSystemLog({
+      action: 'Transferência de estoque',
+      action_type: 'transfer',
+      location: `${fromLocation}→${toLocation}`,
+      user_name: userName,
+      parameters: {
+        item: normalizedName,
+        quantity_kg: Number(qty.toFixed(2)),
+        reference,
+        comment: String(comment || '').trim(),
+      },
+    });
+  };
+
   const adjustItemQuantity = ({ location, itemId, adjustmentQty, comment, userName = 'Frontend Local' }) => {
     const normalizedComment = String(comment || '').trim();
     if (!normalizedComment) throw new Error('Comentário é obrigatório para ajuste manual.');
@@ -117,6 +274,8 @@ export const useInventoryStore = () => {
     items,
     getItemsByLocation,
     summaryByLocation,
+    receiveMaterial,
+    transferMaterial,
     adjustItemQuantity,
   };
 };
