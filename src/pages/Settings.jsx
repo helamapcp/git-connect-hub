@@ -49,6 +49,7 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import ImportacaoMassa from "@/components/settings/ImportacaoMassa";
 import GestaoUsuarios from "@/components/settings/GestaoUsuarios";
+import MateriaPrimaTab from "@/components/settings/MateriaPrimaTab";
 import { appendSystemLog, useSystemLogs } from '@/lib/systemLog';
 
 // ─── Constantes Produto/Campos ───────────────────────────────────────────────
