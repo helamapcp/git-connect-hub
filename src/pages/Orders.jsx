@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Search, Package, Filter, Edit, Trash2, CheckCircle, Clock, Pause, XCircle, AlertTriangle, FileText } from "lucide-react";
+import { createPageUrl } from '@/utils';
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 

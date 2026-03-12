@@ -9,7 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
     ArrowLeft, Square, AlertTriangle, Trash2, Package,
-    CheckCircle, Scale, Plus, Clock, RotateCcw
+    CheckCircle, Scale, Plus, Clock, RotateCcw, Truck
 } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import { cn } from "@/lib/utils";
