@@ -1,90 +1,88 @@
-import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
+import { BrowserRouter as Router, Link, Route, Routes } from 'react-router-dom'
+import { Toaster } from '@/components/ui/toaster'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { queryClientInstance } from '@/lib/query-client'
 import { pagesConfig } from './pages.config'
-import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
-import PageNotFound from './lib/PageNotFound';
-import { AuthProvider, useAuth } from '@/lib/AuthContext';
-import UserNotRegisteredError from '@/components/UserNotRegisteredError';
-import Login from '@/pages/Login';
+import PageNotFound from './lib/PageNotFound'
+import { createPageUrl } from '@/utils'
 
-const { Pages, Layout, mainPage } = pagesConfig;
-const mainPageKey = mainPage ?? Object.keys(Pages)[0];
-const MainPage = mainPageKey ? Pages[mainPageKey] : <></>;
+const { Pages, Layout } = pagesConfig
 
-const LayoutWrapper = ({ children, currentPageName }) => Layout ?
-    <Layout currentPageName={currentPageName}>{children}</Layout>
-    : <>{children}</>;
+const LayoutWrapper = ({ children, currentPageName }) =>
+  Layout ? <Layout currentPageName={currentPageName}>{children}</Layout> : <>{children}</>
 
-const AuthenticatedApp = () => {
-    const { isLoadingAuth, isLoadingPublicSettings, isAuthenticated, authError, navigateToLogin } = useAuth();
-    const isLoginRoute = window.location.pathname === '/login';
+function FrontendPreview() {
+  const pages = Object.keys(Pages)
 
-    // Show loading spinner while checking app public settings or auth
-    if (isLoadingPublicSettings || isLoadingAuth) {
-        return (
-            <div className="fixed inset-0 flex items-center justify-center">
-                <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
+  return (
+    <main className="min-h-screen bg-background text-foreground p-4 md:p-8">
+      <div className="max-w-6xl mx-auto space-y-6">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-bold">Preview Frontend (sem backend)</h1>
+          <p className="text-sm text-muted-foreground">
+            Navegue livremente pelas páginas abaixo. O projeto está em modo frontend-only com dados mockados locais.
+          </p>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Comandos de desenvolvimento/build</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2 text-sm text-muted-foreground">
+            <p><Badge variant="secondary">npm run dev</Badge> Inicia preview local</p>
+            <p><Badge variant="secondary">npm run build</Badge> Build de produção</p>
+            <p><Badge variant="secondary">npm run build:dev</Badge> Build em modo development</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Páginas disponíveis</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {pages.map((page) => (
+                <Link
+                  key={page}
+                  to={createPageUrl(page)}
+                  className="rounded-md border border-border px-3 py-2 hover:bg-muted transition-colors"
+                >
+                  {page}
+                </Link>
+              ))}
             </div>
-        );
-    }
-
-    if (isLoginRoute) {
-        if (isAuthenticated) {
-            return <Navigate to={`/${mainPageKey}`} replace />;
-        }
-        return <Login />;
-    }
-
-    // Handle authentication errors
-    if (authError) {
-        if (authError.type === 'user_not_registered') {
-            return <UserNotRegisteredError />;
-        } else if (authError.type === 'auth_required') {
-            // Redirect to login automatically
-            navigateToLogin();
-            return null;
-        }
-    }
-
-    // Render the main app
-    return (
-        <Routes>
-            <Route path="/" element={
-                <LayoutWrapper currentPageName={mainPageKey}>
-                    <MainPage />
-                </LayoutWrapper>
-            } />
-            {Object.entries(Pages).map(([path, Page]) => (
-                <Route
-                    key={path}
-                    path={`/${path}`}
-                    element={
-                        <LayoutWrapper currentPageName={path}>
-                            <Page />
-                        </LayoutWrapper>
-                    }
-                />
-            ))}
-            <Route path="/login" element={<Login />} />
-            <Route path="*" element={<PageNotFound />} />
-        </Routes>
-    );
-};
-
+          </CardContent>
+        </Card>
+      </div>
+    </main>
+  )
+}
 
 function App() {
-
-    return (
-        <AuthProvider>
-            <QueryClientProvider client={queryClientInstance}>
-                <Router>
-                    <AuthenticatedApp />
-                </Router>
-                <Toaster />
-            </QueryClientProvider>
-        </AuthProvider>
-    )
+  return (
+    <QueryClientProvider client={queryClientInstance}>
+      <Router>
+        <Routes>
+          <Route path="/" element={<FrontendPreview />} />
+          {Object.entries(Pages).map(([path, Page]) => (
+            <Route
+              key={path}
+              path={`/${path}`}
+              element={
+                <LayoutWrapper currentPageName={path}>
+                  <Page />
+                </LayoutWrapper>
+              }
+            />
+          ))}
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+      </Router>
+      <Toaster />
+    </QueryClientProvider>
+  )
 }
 
 export default App
