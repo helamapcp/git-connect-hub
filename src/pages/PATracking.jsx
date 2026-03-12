@@ -343,7 +343,7 @@ export default function PATracking() {
                             step="0.01"
                             value={transferDrafts[item.id] ?? ''}
                             onChange={(e) => setDraft(item.id, e.target.value)}
-                            disabled={item.status !== 'factory'}
+                            disabled={item.status !== 'factory' || !canManageLogistics}
                             placeholder={item.status === 'factory' ? 'Ex: 120' : Number(item.transfer_qty || 0).toString()}
                           />
                         </TableCell>
