@@ -100,6 +100,9 @@ function mergeWithPersistedData(baseItems) {
 }
 
 export default function PATracking() {
+  const { currentUser } = useUsersStore();
+  const canManageLogistics = canPerformAction(currentUser?.role, 'logistics.manage');
+
   const [items, setItems] = useState([]);
   const [transferDrafts, setTransferDrafts] = useState({});
 
