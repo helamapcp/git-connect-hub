@@ -179,7 +179,11 @@ function CampoForm({ campo, onSave, onCancel }) {
 
 // Machine Form
 function MachineForm({ machine, onSave, onCancel, categories = [] }) {
-    const availableCategories = categories.length ? categories : DEFAULT_MACHINE_CATEGORIES;
+    const baseCategories = categories.length ? categories : DEFAULT_MACHINE_CATEGORIES;
+    const hasCurrentMachineType = !!machine?.type && baseCategories.some((category) => category.name === machine.type);
+    const availableCategories = hasCurrentMachineType
+        ? baseCategories
+        : (machine?.type ? [{ id: `cat-current-${machine.id || 'temp'}`, name: machine.type }, ...baseCategories] : baseCategories);
     const defaultType = machine?.type || availableCategories[0]?.name || 'extrusora';
 
     const [form, setForm] = useState(machine || {
