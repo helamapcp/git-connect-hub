@@ -211,7 +211,7 @@ export default function PATracking() {
             </Button>
             <ArrowRightLeft className="w-4 h-4 text-muted-foreground" />
             <Button asChild variant="outline" size="sm">
-              <Link to={createPageUrl('Production')}>Production</Link>
+              <Link to={createPageUrl('MachineSelection')}>Production</Link>
             </Button>
             <ArrowRightLeft className="w-4 h-4 text-muted-foreground" />
             <Button asChild size="sm">
@@ -347,3 +347,4 @@ export default function PATracking() {
     </div>
   );
 }
+
