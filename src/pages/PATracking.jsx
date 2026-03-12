@@ -354,7 +354,7 @@ export default function PATracking() {
                         <TableCell>
                           <div className="flex justify-end gap-2">
                             {item.status === 'factory' && (
-                              <Button size="sm" onClick={() => confirmTransfer(item)}>
+                              <Button size="sm" onClick={() => confirmTransfer(item)} disabled={!canManageLogistics}>
                                 <Truck className="w-4 h-4 mr-1" /> Confirmar
                               </Button>
                             )}
