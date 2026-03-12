@@ -612,6 +612,12 @@ export default function Settings() {
             },
         ]);
         setNewMachineCategory('');
+        appendSystemLog({
+            action: 'Adicionar categoria de máquina',
+            action_type: 'add',
+            location: 'SETTINGS',
+            parameters: { category: name },
+        });
         toast.success('Categoria adicionada!');
     };
 
@@ -627,6 +633,7 @@ export default function Settings() {
             return;
         }
 
+        const currentCategory = machineCategories.find((category) => category.id === categoryId);
         const duplicate = machineCategories.some(
             (category) => category.id !== categoryId && normalizeCategoryName(category.name) === normalizeCategoryName(name)
         );
@@ -640,6 +647,12 @@ export default function Settings() {
         )));
         setEditingCategoryId(null);
         setEditingCategoryName('');
+        appendSystemLog({
+            action: 'Editar categoria de máquina',
+            action_type: 'edit',
+            location: 'SETTINGS',
+            parameters: { from: currentCategory?.name, to: name },
+        });
         toast.success('Categoria atualizada!');
     };
 
@@ -661,6 +674,12 @@ export default function Settings() {
             setEditingCategoryId(null);
             setEditingCategoryName('');
         }
+        appendSystemLog({
+            action: 'Remover categoria de máquina',
+            action_type: 'delete',
+            location: 'SETTINGS',
+            parameters: { category: categoryToDelete.name },
+        });
         setCategoryToDelete(null);
         toast.success('Categoria removida!');
     };
