@@ -178,11 +178,14 @@ function CampoForm({ campo, onSave, onCancel }) {
 }
 
 // Machine Form
-function MachineForm({ machine, onSave, onCancel }) {
+function MachineForm({ machine, onSave, onCancel, categories = [] }) {
+    const availableCategories = categories.length ? categories : DEFAULT_MACHINE_CATEGORIES;
+    const defaultType = machine?.type || availableCategories[0]?.name || 'extrusora';
+
     const [form, setForm] = useState(machine || {
         code: '',
         name: '',
-        type: 'extrusora',
+        type: defaultType,
         sector: '',
         status: 'available'
     });
@@ -209,14 +212,13 @@ function MachineForm({ machine, onSave, onCancel }) {
             </div>
             <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                    <Label>Tipo</Label>
+                    <Label>Categoria</Label>
                     <Select value={form.type} onValueChange={(v) => setForm({ ...form, type: v })}>
                         <SelectTrigger><SelectValue /></SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="extrusora">Extrusora</SelectItem>
-                            <SelectItem value="injetora">Injetora</SelectItem>
-                            <SelectItem value="cortadeira">Cortadeira</SelectItem>
-                            <SelectItem value="embaladora">Embaladora</SelectItem>
+                            {availableCategories.map((category) => (
+                                <SelectItem key={category.id} value={category.name}>{category.name}</SelectItem>
+                            ))}
                         </SelectContent>
                     </Select>
                 </div>
