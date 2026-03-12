@@ -439,6 +439,14 @@ export default function Settings() {
     const [editingCategoryName, setEditingCategoryName] = useState('');
     const [categoryToDelete, setCategoryToDelete] = useState(null);
 
+    const { logs: systemLogs, users: logUsers } = useSystemLogs();
+    const [logSearch, setLogSearch] = useState('');
+    const [logUserFilter, setLogUserFilter] = useState('all');
+    const [logActionFilter, setLogActionFilter] = useState('all');
+    const [logLocationFilter, setLogLocationFilter] = useState('all');
+    const [logDateFrom, setLogDateFrom] = useState('');
+    const [logDateTo, setLogDateTo] = useState('');
+
     // ── Produto state ──────────────────────────────────────────────
     const [prodSearch, setProdSearch] = useState('');
     const [showInactiveProd, setShowInactiveProd] = useState(false);
