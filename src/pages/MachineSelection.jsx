@@ -65,8 +65,8 @@ export default function MachineSelection() {
 
     const handleMachineSelect = (machine) => {
         setSelectedMachine(machine);
-        // Se for operador, auto-detectar turno e pular modal
-        if (user?.role === 'operador') {
+        const normalizedRole = normalizeRole(user?.role);
+        if (normalizedRole === ROLE_IDS.MACHINE_OPERATOR) {
             const autoShift = detectCurrentShift(shifts);
             if (autoShift) {
                 navigate(createPageUrl('Production') + `?machine=${machine.id}&shift=${autoShift.id}`);
