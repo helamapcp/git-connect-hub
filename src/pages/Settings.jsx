@@ -59,6 +59,14 @@ const UNIDADES_POR_CATEGORIA = {
 };
 const TIPO_DADO_LABEL = { string: 'Texto', number: 'Número', select: 'Lista', boolean: 'Sim/Não' };
 
+const MACHINE_CATEGORY_STORAGE_KEY = 'settings-machine-categories-v1';
+const DEFAULT_MACHINE_CATEGORIES = [
+    { id: 'cat-extrusora', name: 'extrusora' },
+    { id: 'cat-injetora', name: 'injetora' },
+    { id: 'cat-cortadeira', name: 'cortadeira' },
+    { id: 'cat-embaladora', name: 'embaladora' },
+];
+
 // ─── DynamicFields ────────────────────────────────────────────────────────────
 function DynamicFields({ campos, valores, onChange }) {
     if (!campos.length) return null;
