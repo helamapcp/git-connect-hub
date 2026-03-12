@@ -589,6 +589,12 @@ export default function Production() {
                     <div className="lg:col-span-2 space-y-4">
                         <OrderStatusPanel order={selectedOrder} session={session} />
 
+                        <ProductionTraceabilityPanel
+                            machine={machine}
+                            order={selectedOrder}
+                            operatorName={user?.full_name}
+                        />
+
                         {session && selectedOrder && (
                             <>
                                 {/* Botão principal de apontamento */}
