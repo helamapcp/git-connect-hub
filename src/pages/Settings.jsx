@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,6 +15,16 @@ import {
     DialogTitle,
     DialogFooter,
 } from "@/components/ui/dialog";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import {
     Select,
     SelectContent,
@@ -48,6 +58,14 @@ const UNIDADES_POR_CATEGORIA = {
     TELHA: 'UNIDADE', CUMEEIRA: 'UNIDADE', PORTA: 'UNIDADE'
 };
 const TIPO_DADO_LABEL = { string: 'Texto', number: 'Número', select: 'Lista', boolean: 'Sim/Não' };
+
+const MACHINE_CATEGORY_STORAGE_KEY = 'settings-machine-categories-v1';
+const DEFAULT_MACHINE_CATEGORIES = [
+    { id: 'cat-extrusora', name: 'extrusora' },
+    { id: 'cat-injetora', name: 'injetora' },
+    { id: 'cat-cortadeira', name: 'cortadeira' },
+    { id: 'cat-embaladora', name: 'embaladora' },
+];
 
 // ─── DynamicFields ────────────────────────────────────────────────────────────
 function DynamicFields({ campos, valores, onChange }) {
@@ -160,11 +178,18 @@ function CampoForm({ campo, onSave, onCancel }) {
 }
 
 // Machine Form
-function MachineForm({ machine, onSave, onCancel }) {
+function MachineForm({ machine, onSave, onCancel, categories = [] }) {
+    const baseCategories = categories.length ? categories : DEFAULT_MACHINE_CATEGORIES;
+    const hasCurrentMachineType = !!machine?.type && baseCategories.some((category) => category.name === machine.type);
+    const availableCategories = hasCurrentMachineType
+        ? baseCategories
+        : (machine?.type ? [{ id: `cat-current-${machine.id || 'temp'}`, name: machine.type }, ...baseCategories] : baseCategories);
+    const defaultType = machine?.type || availableCategories[0]?.name || 'extrusora';
+
     const [form, setForm] = useState(machine || {
         code: '',
         name: '',
-        type: 'extrusora',
+        type: defaultType,
         sector: '',
         status: 'available'
     });
@@ -191,14 +216,13 @@ function MachineForm({ machine, onSave, onCancel }) {
             </div>
             <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                    <Label>Tipo</Label>
+                    <Label>Categoria</Label>
                     <Select value={form.type} onValueChange={(v) => setForm({ ...form, type: v })}>
                         <SelectTrigger><SelectValue /></SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="extrusora">Extrusora</SelectItem>
-                            <SelectItem value="injetora">Injetora</SelectItem>
-                            <SelectItem value="cortadeira">Cortadeira</SelectItem>
-                            <SelectItem value="embaladora">Embaladora</SelectItem>
+                            {availableCategories.map((category) => (
+                                <SelectItem key={category.id} value={category.name}>{category.name}</SelectItem>
+                            ))}
                         </SelectContent>
                     </Select>
                 </div>
@@ -408,6 +432,12 @@ export default function Settings() {
     const [showModal, setShowModal] = useState(false);
     const [editingItem, setEditingItem] = useState(null);
 
+    const [machineCategories, setMachineCategories] = useState(DEFAULT_MACHINE_CATEGORIES);
+    const [newMachineCategory, setNewMachineCategory] = useState('');
+    const [editingCategoryId, setEditingCategoryId] = useState(null);
+    const [editingCategoryName, setEditingCategoryName] = useState('');
+    const [categoryToDelete, setCategoryToDelete] = useState(null);
+
     // ── Produto state ──────────────────────────────────────────────
     const [prodSearch, setProdSearch] = useState('');
     const [showInactiveProd, setShowInactiveProd] = useState(false);
@@ -531,6 +561,104 @@ export default function Settings() {
         queryKey: ['settings-machines'],
         queryFn: () => base44.entities.Machine.filter({ active: true })
     });
+
+    const normalizeCategoryName = (value = '') => value.trim().toLowerCase();
+
+    useEffect(() => {
+        try {
+            const raw = localStorage.getItem(MACHINE_CATEGORY_STORAGE_KEY);
+            if (!raw) return;
+            const parsed = JSON.parse(raw);
+            if (!Array.isArray(parsed)) return;
+            const valid = parsed
+                .filter((item) => item?.name)
+                .map((item, index) => ({ id: item.id || `cat-local-${index}`, name: String(item.name) }));
+            if (valid.length) setMachineCategories(valid);
+        } catch {
+            // ignore malformed storage
+        }
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem(MACHINE_CATEGORY_STORAGE_KEY, JSON.stringify(machineCategories));
+    }, [machineCategories]);
+
+    const addMachineCategory = () => {
+        const name = newMachineCategory.trim();
+        if (!name) {
+            toast.error('Informe o nome da categoria.');
+            return;
+        }
+        const exists = machineCategories.some((category) => normalizeCategoryName(category.name) === normalizeCategoryName(name));
+        if (exists) {
+            toast.error('Essa categoria já existe.');
+            return;
+        }
+
+        setMachineCategories((prev) => [
+            ...prev,
+            {
+                id: `cat-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
+                name,
+            },
+        ]);
+        setNewMachineCategory('');
+        toast.success('Categoria adicionada!');
+    };
+
+    const startEditMachineCategory = (category) => {
+        setEditingCategoryId(category.id);
+        setEditingCategoryName(category.name);
+    };
+
+    const saveEditMachineCategory = (categoryId) => {
+        const name = editingCategoryName.trim();
+        if (!name) {
+            toast.error('Informe o novo nome da categoria.');
+            return;
+        }
+
+        const duplicate = machineCategories.some(
+            (category) => category.id !== categoryId && normalizeCategoryName(category.name) === normalizeCategoryName(name)
+        );
+        if (duplicate) {
+            toast.error('Já existe uma categoria com esse nome.');
+            return;
+        }
+
+        setMachineCategories((prev) => prev.map((category) => (
+            category.id === categoryId ? { ...category, name } : category
+        )));
+        setEditingCategoryId(null);
+        setEditingCategoryName('');
+        toast.success('Categoria atualizada!');
+    };
+
+    const confirmDeleteMachineCategory = () => {
+        if (!categoryToDelete) return;
+
+        const inUseCount = machines.filter(
+            (machine) => normalizeCategoryName(machine.type || '') === normalizeCategoryName(categoryToDelete.name)
+        ).length;
+
+        if (inUseCount > 0) {
+            toast.error(`Não é possível remover: ${inUseCount} máquina(s) ainda usam esta categoria.`);
+            setCategoryToDelete(null);
+            return;
+        }
+
+        setMachineCategories((prev) => prev.filter((category) => category.id !== categoryToDelete.id));
+        if (editingCategoryId === categoryToDelete.id) {
+            setEditingCategoryId(null);
+            setEditingCategoryName('');
+        }
+        setCategoryToDelete(null);
+        toast.success('Categoria removida!');
+    };
+
+    const getCategoryUsageCount = (categoryName) => (
+        machines.filter((machine) => normalizeCategoryName(machine.type || '') === normalizeCategoryName(categoryName)).length
+    );
 
     const { data: shifts = [] } = useQuery({
         queryKey: ['settings-shifts'],
@@ -726,50 +854,118 @@ export default function Settings() {
 
                     {/* Machines Tab */}
                     <TabsContent value="machines">
-                        <Card>
-                            <CardHeader className="flex flex-row items-center justify-between">
-                                <CardTitle>Máquinas</CardTitle>
-                                <Button onClick={handleAdd}>
-                                    <Plus className="w-4 h-4 mr-2" />
-                                    Nova Máquina
-                                </Button>
-                            </CardHeader>
-                            <CardContent>
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead>Código</TableHead>
-                                            <TableHead>Nome</TableHead>
-                                            <TableHead>Tipo</TableHead>
-                                            <TableHead>Setor</TableHead>
-                                            <TableHead>Status</TableHead>
-                                            <TableHead className="text-right">Ações</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {machines.map(m => (
-                                            <TableRow key={m.id}>
-                                                <TableCell className="font-semibold">{m.code}</TableCell>
-                                                <TableCell>{m.name}</TableCell>
-                                                <TableCell className="capitalize">{m.type}</TableCell>
-                                                <TableCell>{m.sector}</TableCell>
-                                                <TableCell>
-                                                    <Badge variant="outline">{m.status}</Badge>
-                                                </TableCell>
-                                                <TableCell className="text-right">
-                                                    <Button variant="ghost" size="icon" onClick={() => handleEdit(m)}>
-                                                        <Edit className="w-4 h-4" />
-                                                    </Button>
-                                                    <Button variant="ghost" size="icon" onClick={() => handleDelete(m.id)}>
-                                                        <Trash2 className="w-4 h-4 text-red-500" />
-                                                    </Button>
-                                                </TableCell>
+                        <div className="space-y-4">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Categorias de Máquina</CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <div className="flex flex-col md:flex-row gap-2">
+                                        <Input
+                                            value={newMachineCategory}
+                                            onChange={(e) => setNewMachineCategory(e.target.value)}
+                                            placeholder="Nova categoria (ex: misturadora)"
+                                        />
+                                        <Button onClick={addMachineCategory} className="md:w-auto w-full">
+                                            <Plus className="w-4 h-4 mr-2" />
+                                            Adicionar categoria
+                                        </Button>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        {machineCategories.length === 0 ? (
+                                            <p className="text-sm text-muted-foreground">Nenhuma categoria cadastrada.</p>
+                                        ) : machineCategories.map((category) => {
+                                            const usageCount = getCategoryUsageCount(category.name);
+                                            const isEditing = editingCategoryId === category.id;
+
+                                            return (
+                                                <div key={category.id} className="flex flex-col md:flex-row md:items-center justify-between gap-2 border rounded-md p-3">
+                                                    <div className="flex-1">
+                                                        {isEditing ? (
+                                                            <Input
+                                                                value={editingCategoryName}
+                                                                onChange={(e) => setEditingCategoryName(e.target.value)}
+                                                                placeholder="Nome da categoria"
+                                                            />
+                                                        ) : (
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="font-medium">{category.name}</span>
+                                                                <Badge variant="secondary">{usageCount} máquina(s)</Badge>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                    <div className="flex gap-2 justify-end">
+                                                        {isEditing ? (
+                                                            <>
+                                                                <Button size="sm" onClick={() => saveEditMachineCategory(category.id)}>Salvar</Button>
+                                                                <Button size="sm" variant="outline" onClick={() => { setEditingCategoryId(null); setEditingCategoryName(''); }}>
+                                                                    Cancelar
+                                                                </Button>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <Button size="sm" variant="outline" onClick={() => startEditMachineCategory(category)}>
+                                                                    <Edit className="w-4 h-4 mr-1" /> Editar
+                                                                </Button>
+                                                                <Button size="sm" variant="ghost" onClick={() => setCategoryToDelete(category)}>
+                                                                    <Trash2 className="w-4 h-4 text-red-500" />
+                                                                </Button>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            <Card>
+                                <CardHeader className="flex flex-row items-center justify-between">
+                                    <CardTitle>Máquinas</CardTitle>
+                                    <Button onClick={handleAdd}>
+                                        <Plus className="w-4 h-4 mr-2" />
+                                        Nova Máquina
+                                    </Button>
+                                </CardHeader>
+                                <CardContent>
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead>Código</TableHead>
+                                                <TableHead>Nome</TableHead>
+                                                <TableHead>Categoria</TableHead>
+                                                <TableHead>Setor</TableHead>
+                                                <TableHead>Status</TableHead>
+                                                <TableHead className="text-right">Ações</TableHead>
                                             </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </CardContent>
-                        </Card>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {machines.map(m => (
+                                                <TableRow key={m.id}>
+                                                    <TableCell className="font-semibold">{m.code}</TableCell>
+                                                    <TableCell>{m.name}</TableCell>
+                                                    <TableCell className="capitalize">{m.type}</TableCell>
+                                                    <TableCell>{m.sector}</TableCell>
+                                                    <TableCell>
+                                                        <Badge variant="outline">{m.status}</Badge>
+                                                    </TableCell>
+                                                    <TableCell className="text-right">
+                                                        <Button variant="ghost" size="icon" onClick={() => handleEdit(m)}>
+                                                            <Edit className="w-4 h-4" />
+                                                        </Button>
+                                                        <Button variant="ghost" size="icon" onClick={() => handleDelete(m.id)}>
+                                                            <Trash2 className="w-4 h-4 text-red-500" />
+                                                        </Button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </CardContent>
+                            </Card>
+                        </div>
                     </TabsContent>
 
                     {/* Shifts Tab */}
@@ -1092,7 +1288,7 @@ export default function Settings() {
                             <DialogTitle>{getModalTitle()}</DialogTitle>
                         </DialogHeader>
                         {activeTab === 'machines' && (
-                            <MachineForm machine={editingItem} onSave={handleSave} onCancel={() => setShowModal(false)} />
+                            <MachineForm machine={editingItem} categories={machineCategories} onSave={handleSave} onCancel={() => setShowModal(false)} />
                         )}
                         {activeTab === 'shifts' && (
                             <ShiftForm shift={editingItem} onSave={handleSave} onCancel={() => setShowModal(false)} />
@@ -1193,6 +1389,22 @@ export default function Settings() {
                         />
                     </DialogContent>
                 </Dialog>
+
+                <AlertDialog open={!!categoryToDelete} onOpenChange={(open) => !open && setCategoryToDelete(null)}>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Remover categoria?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Esta ação removerá a categoria <strong>{categoryToDelete?.name}</strong> da lista local.
+                                Máquinas que ainda usam essa categoria impedem a remoção.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                            <AlertDialogAction onClick={confirmDeleteMachineCategory}>Remover</AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
             </div>
         </div>
     );
