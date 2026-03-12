@@ -82,6 +82,7 @@ export const PAGES = {
     "Production": Production,
     "Produtos": Produtos,
     "Settings": Settings,
+    "FormulationPlanning": FormulationPlanning,
 }
 
 export const pagesConfig = {
