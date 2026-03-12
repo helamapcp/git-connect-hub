@@ -1,20 +1,21 @@
-import { QueryClientProvider } from '@tanstack/react-query'
-import { BrowserRouter as Router, Link, Route, Routes } from 'react-router-dom'
-import { Toaster } from '@/components/ui/toaster'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { queryClientInstance } from '@/lib/query-client'
-import { pagesConfig } from './pages.config'
-import PageNotFound from './lib/PageNotFound'
-import { createPageUrl } from '@/utils'
+import { QueryClientProvider } from '@tanstack/react-query';
+import { BrowserRouter as Router, Link, Route, Routes } from 'react-router-dom';
+import { Toaster } from '@/components/ui/toaster';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { queryClientInstance } from '@/lib/query-client';
+import { pagesConfig } from './pages.config';
+import PageNotFound from './lib/PageNotFound';
+import { createPageUrl } from '@/utils';
+import RouteGuard from '@/components/auth/RouteGuard';
 
-const { Pages, Layout } = pagesConfig
+const { Pages, Layout } = pagesConfig;
 
 const LayoutWrapper = ({ children, currentPageName }) =>
-  Layout ? <Layout currentPageName={currentPageName}>{children}</Layout> : <>{children}</>
+  Layout ? <Layout currentPageName={currentPageName}>{children}</Layout> : <>{children}</>;
 
 function FrontendPreview() {
-  const pages = Object.keys(Pages)
+  const pages = Object.keys(Pages);
 
   return (
     <main className="min-h-screen bg-background text-foreground p-4 md:p-8">
@@ -31,9 +32,15 @@ function FrontendPreview() {
             <CardTitle className="text-base">Comandos de desenvolvimento/build</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm text-muted-foreground">
-            <p><Badge variant="secondary">npm run dev</Badge> Inicia preview local</p>
-            <p><Badge variant="secondary">npm run build</Badge> Build de produção</p>
-            <p><Badge variant="secondary">npm run build:dev</Badge> Build em modo development</p>
+            <p>
+              <Badge variant="secondary">npm run dev</Badge> Inicia preview local
+            </p>
+            <p>
+              <Badge variant="secondary">npm run build</Badge> Build de produção
+            </p>
+            <p>
+              <Badge variant="secondary">npm run build:dev</Badge> Build em modo development
+            </p>
           </CardContent>
         </Card>
 
@@ -57,7 +64,7 @@ function FrontendPreview() {
         </Card>
       </div>
     </main>
-  )
+  );
 }
 
 function App() {
@@ -72,7 +79,9 @@ function App() {
               path={`/${path}`}
               element={
                 <LayoutWrapper currentPageName={path}>
-                  <Page />
+                  <RouteGuard pageName={path}>
+                    <Page />
+                  </RouteGuard>
                 </LayoutWrapper>
               }
             />
@@ -82,7 +91,7 @@ function App() {
       </Router>
       <Toaster />
     </QueryClientProvider>
-  )
+  );
 }
 
-export default App
+export default App;
