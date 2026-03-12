@@ -428,6 +428,12 @@ export default function Settings() {
     const [showModal, setShowModal] = useState(false);
     const [editingItem, setEditingItem] = useState(null);
 
+    const [machineCategories, setMachineCategories] = useState(DEFAULT_MACHINE_CATEGORIES);
+    const [newMachineCategory, setNewMachineCategory] = useState('');
+    const [editingCategoryId, setEditingCategoryId] = useState(null);
+    const [editingCategoryName, setEditingCategoryName] = useState('');
+    const [categoryToDelete, setCategoryToDelete] = useState(null);
+
     // ── Produto state ──────────────────────────────────────────────
     const [prodSearch, setProdSearch] = useState('');
     const [showInactiveProd, setShowInactiveProd] = useState(false);
@@ -551,6 +557,104 @@ export default function Settings() {
         queryKey: ['settings-machines'],
         queryFn: () => base44.entities.Machine.filter({ active: true })
     });
+
+    const normalizeCategoryName = (value = '') => value.trim().toLowerCase();
+
+    useEffect(() => {
+        try {
+            const raw = localStorage.getItem(MACHINE_CATEGORY_STORAGE_KEY);
+            if (!raw) return;
+            const parsed = JSON.parse(raw);
+            if (!Array.isArray(parsed)) return;
+            const valid = parsed
+                .filter((item) => item?.name)
+                .map((item, index) => ({ id: item.id || `cat-local-${index}`, name: String(item.name) }));
+            if (valid.length) setMachineCategories(valid);
+        } catch {
+            // ignore malformed storage
+        }
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem(MACHINE_CATEGORY_STORAGE_KEY, JSON.stringify(machineCategories));
+    }, [machineCategories]);
+
+    const addMachineCategory = () => {
+        const name = newMachineCategory.trim();
+        if (!name) {
+            toast.error('Informe o nome da categoria.');
+            return;
+        }
+        const exists = machineCategories.some((category) => normalizeCategoryName(category.name) === normalizeCategoryName(name));
+        if (exists) {
+            toast.error('Essa categoria já existe.');
+            return;
+        }
+
+        setMachineCategories((prev) => [
+            ...prev,
+            {
+                id: `cat-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
+                name,
+            },
+        ]);
+        setNewMachineCategory('');
+        toast.success('Categoria adicionada!');
+    };
+
+    const startEditMachineCategory = (category) => {
+        setEditingCategoryId(category.id);
+        setEditingCategoryName(category.name);
+    };
+
+    const saveEditMachineCategory = (categoryId) => {
+        const name = editingCategoryName.trim();
+        if (!name) {
+            toast.error('Informe o novo nome da categoria.');
+            return;
+        }
+
+        const duplicate = machineCategories.some(
+            (category) => category.id !== categoryId && normalizeCategoryName(category.name) === normalizeCategoryName(name)
+        );
+        if (duplicate) {
+            toast.error('Já existe uma categoria com esse nome.');
+            return;
+        }
+
+        setMachineCategories((prev) => prev.map((category) => (
+            category.id === categoryId ? { ...category, name } : category
+        )));
+        setEditingCategoryId(null);
+        setEditingCategoryName('');
+        toast.success('Categoria atualizada!');
+    };
+
+    const confirmDeleteMachineCategory = () => {
+        if (!categoryToDelete) return;
+
+        const inUseCount = machines.filter(
+            (machine) => normalizeCategoryName(machine.type || '') === normalizeCategoryName(categoryToDelete.name)
+        ).length;
+
+        if (inUseCount > 0) {
+            toast.error(`Não é possível remover: ${inUseCount} máquina(s) ainda usam esta categoria.`);
+            setCategoryToDelete(null);
+            return;
+        }
+
+        setMachineCategories((prev) => prev.filter((category) => category.id !== categoryToDelete.id));
+        if (editingCategoryId === categoryToDelete.id) {
+            setEditingCategoryId(null);
+            setEditingCategoryName('');
+        }
+        setCategoryToDelete(null);
+        toast.success('Categoria removida!');
+    };
+
+    const getCategoryUsageCount = (categoryName) => (
+        machines.filter((machine) => normalizeCategoryName(machine.type || '') === normalizeCategoryName(categoryName)).length
+    );
 
     const { data: shifts = [] } = useQuery({
         queryKey: ['settings-shifts'],
